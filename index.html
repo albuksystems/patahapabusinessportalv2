@@ -1,1 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pata Hapa — Business Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Clash+Display:wght@400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #25D366;
+    --green-dark: #128C7E;
+    --green-glow: rgba(37,211,102,0.15);
+    --gold: #F4C430;
+    --gold-dim: rgba(244,196,48,0.12);
+    --bg: #060a06;
+    --surface: #0c110c;
+    --surface2: #131a13;
+    --surface3: #1a241a;
+    --border: #1e2e1e;
+    --border2: #253525;
+    --text: #e4ede4;
+    --muted: #5a7a5a;
+    --muted2: #3a5a3a;
+    --red: #ff4455;
+    --blue: #64B5F6;
+    --white: #ffffff;
+  }
 
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Syne', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display:none; min-height:100vh; }
+  .screen.active { display:block; }
+
+  /* ══════════════════════════════════════════
+     LOGIN SCREEN
+  ══════════════════════════════════════════ */
+  #loginScreen {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
+  }
+
+  #loginScreen::before {
+    content:'';
+    position:absolute;
+    top:-30%;
+    left:50%;
+    transform:translateX(-50%);
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle, rgba(37,211,102,0.08) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  #loginScreen::after {
+    content:'PATA HAPA';
+    position:absolute;
+    bottom:-20px;
+    left:50%;
+    transform:translateX(-50%);
+    font-family:'Syne', sans-serif;
+    font-size:5rem;
+    font-weight:800;
+    color:rgba(37,211,102,0.03);
+    white-space:nowrap;
+    letter-spacing:8px;
+    pointer-events:none;
+  }
+
+  .login-brand {
+    text-align:center;
+    margin-bottom:40px;
+    position:relative;
+  }
+
+  .login-logo {
+    font-family:'Syne', sans-serif;
+    font-size:3rem;
+    font-weight:800;
+    color:var(--green);
+    letter-spacing:-2px;
+    line-height:1;
+  }
+
+  .login-logo span { color:var(--gold); }
+
+  .login-eyebrow {
+    font-family:'DM Mono', monospace;
+    font-size:0.6rem;
+    color:var(--muted);
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-top:8px;
+  }
+
+  .login-card {
+    width:100%;
+    max-width:380px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:32px 28px;
+    position:relative;
+    box-shadow:0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(37,211,102,0.05);
+  }
+
+  .login-card::before {
+    content:'';
+    position:absolute;
+    top:0; left:50%;
+    transform:translateX(-50%);
+    width:60%;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--green-dark), transparent);
+  }
+
+  .login-title {
+    font-size:1.2rem;
+    font-weight:700;
+    margin-bottom:4px;
+  }
+
+  .login-sub {
+    font-family:'DM Mono', monospace;
+    font-size:0.65rem;
+    color:var(--muted);
+    margin-bottom:28px;
+  }
+
+  .field { margin-bottom:18px; }
+
+  .field label {
+    display:block;
+    font-family:'DM Mono', monospace;
+    font-size:0.62rem;
+    color:var(--muted);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  .input-wrap { position:relative; }
+
+  .field input {
+    width:100%;
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:13px 16px;
+    color:var(--text);
+    font-family:'Syne', sans-serif;
+    font-size:0.9rem;
+    outline:none;
+    transition:border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance:none;
+  }
+
+  .field input:focus {
+    border-color:var(--green-dark);
+    box-shadow:0 0 0 3px var(--green-glow);
+  }
+
+  .field input::placeholder { color:var(--muted2); }
+
+  .input-wrap input { padding-right:48px; }
+
+  .pw-toggle {
+    position:absolute; right:14px; top:50%;
+    transform:translateY(-50%);
+    background:none; border:none; cursor:pointer;
+    color:var(--muted); font-size:1rem;
+    padding:4px; transition:color 0.2s;
+    display:flex; align-items:center;
+  }
+  .pw-toggle:hover { color:var(--green); }
+
+  .login-btn {
+    width:100%; padding:15px;
+    background:var(--green);
+    border:none; border-radius:12px;
+    color:#000; font-family:'Syne', sans-serif;
+    font-weight:800; font-size:0.95rem;
+    cursor:pointer; transition:all 0.2s;
+    letter-spacing:0.5px;
+    margin-top:4px;
+  }
+  .login-btn:hover { background:#1db954; transform:translateY(-1px); box-shadow:0 8px 20px rgba(37,211,102,0.3); }
+  .login-btn:active { transform:translateY(0); }
+
+  .login-error {
+    margin-top:14px; padding:11px 14px;
+    background:rgba(255,68,85,0.1);
+    border:1px solid rgba(255,68,85,0.25);
+    border-radius:10px;
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem; color:var(--red);
+    display:none;
+  }
+
+  /* ══════════════════════════════════════════
+     PORTAL SCREEN
+  ══════════════════════════════════════════ */
+  #portalScreen { background:var(--bg); }
+
+  /* TOPBAR */
+  .topbar {
+    background:var(--surface);
+    border-bottom:1px solid var(--border);
+    padding:0 20px;
+    display:flex; align-items:center;
+    justify-content:space-between;
+    height:60px;
+    position:sticky; top:0; z-index:200;
+  }
+
+  .topbar-left { display:flex; align-items:center; gap:14px; }
+
+  .topbar-logo {
+    font-family:'Syne', sans-serif;
+    font-size:1.3rem; font-weight:800;
+    color:var(--green); letter-spacing:-0.5px;
+  }
+  .topbar-logo span { color:var(--gold); }
+
+  .topbar-divider { width:1px; height:24px; background:var(--border); }
+
+  .topbar-biz {
+    font-family:'DM Mono', monospace;
+    font-size:0.65rem; color:var(--muted);
+    letter-spacing:1px;
+    max-width:140px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  .topbar-right { display:flex; align-items:center; gap:10px; }
+
+  .tier-chip {
+    padding:4px 12px;
+    border-radius:20px;
+    font-family:'DM Mono', monospace;
+    font-size:0.6rem; font-weight:500;
+    letter-spacing:1px;
+  }
+
+  .chip-mtaa { background:#0d2a0d; color:var(--green); border:1px solid var(--green-dark); }
+  .chip-biashara { background:#0d1a2a; color:var(--blue); border:1px solid #1a3a5a; }
+  .chip-corridor { background:#2a1a00; color:var(--gold); border:1px solid #5a3a00; }
+
+  .signout-btn {
+    padding:7px 14px;
+    background:transparent;
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--muted);
+    font-family:'DM Mono', monospace;
+    font-size:0.6rem; cursor:pointer;
+    transition:all 0.2s;
+  }
+  .signout-btn:hover { border-color:var(--red); color:var(--red); }
+
+  /* BUSINESS HERO */
+  .biz-hero {
+    background:linear-gradient(180deg, #0d200d 0%, var(--bg) 100%);
+    border-bottom:1px solid var(--border);
+    padding:28px 20px 24px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .biz-hero::after {
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse at 80% 50%, rgba(37,211,102,0.06) 0%, transparent 60%);
+    pointer-events:none;
+  }
+
+  .biz-name {
+    font-family:'Syne', sans-serif;
+    font-size:1.6rem; font-weight:800;
+    line-height:1.1; margin-bottom:6px;
+  }
+
+  .biz-meta {
+    font-family:'DM Mono', monospace;
+    font-size:0.65rem; color:var(--muted);
+    display:flex; align-items:center; gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .biz-meta span { display:flex; align-items:center; gap:4px; }
+
+  /* STATS ROW */
+  .stats-row {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--border);
+    border-bottom:1px solid var(--border);
+  }
+
+  .stat-box {
+    background:var(--surface);
+    padding:16px 14px;
+    text-align:center;
+  }
+
+  .stat-n {
+    font-family:'Syne', sans-serif;
+    font-size:1.8rem; font-weight:800;
+    line-height:1;
+  }
+
+  .stat-l {
+    font-family:'DM Mono', monospace;
+    font-size:0.58rem; color:var(--muted);
+    margin-top:4px; letter-spacing:1px;
+    text-transform:uppercase;
+  }
+
+  /* CONTENT */
+  .portal-content {
+    padding:20px 16px;
+    max-width:560px;
+    margin:0 auto;
+    display:flex; flex-direction:column; gap:20px;
+  }
+
+  /* SECTION HEADER */
+  .section-hd {
+    display:flex; align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+
+  .section-hd h2 {
+    font-family:'DM Mono', monospace;
+    font-size:0.7rem; color:var(--gold);
+    letter-spacing:3px; text-transform:uppercase;
+  }
+
+  /* ADD PRODUCT FORM */
+  .add-card {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px; overflow:hidden;
+  }
+
+  .add-header {
+    padding:16px 20px;
+    background:var(--surface2);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center;
+    justify-content:space-between;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+
+  .add-header:hover { background:var(--surface3); }
+  .add-header h3 { font-size:0.9rem; font-weight:600; }
+  .add-icon { color:var(--muted); font-size:1.4rem; transition:transform 0.3s; }
+  .add-header.open .add-icon { transform:rotate(45deg); color:var(--green); }
+
+  .add-body { padding:20px; display:none; }
+  .add-body.open { display:block; }
+
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+  /* CATEGORY CHIPS */
+  .cat-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+
+  .cat-chip {
+    padding:5px 12px; border-radius:14px;
+    border:1px solid var(--border);
+    font-family:'DM Mono', monospace;
+    font-size:0.62rem; cursor:pointer;
+    transition:all 0.2s; color:var(--muted);
+    background:transparent;
+  }
+
+  .cat-chip.on {
+    background:var(--green-dark);
+    border-color:var(--green);
+    color:#fff;
+  }
+
+  .save-btn {
+    width:100%; padding:14px;
+    background:var(--green); border:none;
+    border-radius:12px; color:#000;
+    font-family:'Syne', sans-serif;
+    font-weight:800; font-size:0.9rem;
+    cursor:pointer; transition:all 0.2s;
+    margin-top:4px;
+  }
+
+  .save-btn:hover { background:#1db954; }
+
+  /* PRODUCT CARDS */
+  .products-wrap { display:flex; flex-direction:column; gap:12px; }
+
+  .product-card {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    overflow:hidden;
+    transition:border-color 0.2s;
+    animation:fadeUp 0.3s ease;
+  }
+
+  .product-card:hover { border-color:var(--border2); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .product-top {
+    padding:14px 16px;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+
+  .product-icon {
+    width:42px; height:42px;
+    background:var(--surface2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    display:flex; align-items:center;
+    justify-content:center;
+    font-size:1.2rem; flex-shrink:0;
+  }
+
+  .product-info { flex:1; min-width:0; }
+
+  .product-name {
+    font-weight:700; font-size:0.92rem;
+    white-space:nowrap; overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .product-price {
+    font-family:'DM Mono', monospace;
+    font-size:0.75rem; color:var(--gold);
+    margin-top:3px; font-weight:500;
+  }
+
+  .product-cats {
+    display:flex; flex-wrap:wrap; gap:4px;
+    margin-top:6px;
+  }
+
+  .p-cat {
+    padding:2px 8px;
+    background:var(--surface3);
+    border-radius:6px;
+    font-family:'DM Mono', monospace;
+    font-size:0.58rem; color:var(--muted);
+  }
+
+  .product-del {
+    background:none; border:none;
+    color:var(--muted2); cursor:pointer;
+    font-size:1rem; padding:4px;
+    transition:color 0.2s; flex-shrink:0;
+  }
+  .product-del:hover { color:var(--red); }
+
+  /* PROMO SECTION */
+  .promo-section {
+    border-top:1px solid var(--border);
+    padding:12px 16px;
+    background:var(--surface2);
+  }
+
+  .promo-trigger {
+    width:100%; padding:11px 16px;
+    background:transparent;
+    border:1px solid rgba(244,196,48,0.3);
+    border-radius:10px;
+    color:var(--gold);
+    font-family:'DM Mono', monospace;
+    font-size:0.7rem; font-weight:500;
+    cursor:pointer; transition:all 0.2s;
+    display:flex; align-items:center;
+    justify-content:center; gap:8px;
+    letter-spacing:1px;
+  }
+
+  .promo-trigger:hover {
+    background:var(--gold-dim);
+    border-color:var(--gold);
+    box-shadow:0 0 20px rgba(244,196,48,0.1);
+  }
+
+  .promo-trigger:disabled { opacity:0.5; cursor:not-allowed; }
+
+  .promo-output {
+    margin-top:12px;
+    display:none;
+  }
+
+  .promo-output.visible { display:block; }
+
+  .promo-text-box {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+    font-family:'DM Mono', monospace;
+    font-size:0.8rem;
+    line-height:1.75;
+    color:var(--text);
+    white-space:pre-wrap;
+    word-break:break-word;
+    min-height:80px;
+  }
+
+  .promo-generating {
+    display:flex; align-items:center;
+    gap:10px; color:var(--muted);
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem; padding:16px;
+    justify-content:center;
+  }
+
+  .dot-pulse span {
+    display:inline-block;
+    width:6px; height:6px;
+    background:var(--gold);
+    border-radius:50%;
+    animation:dp 1.2s infinite;
+    margin:0 2px;
+  }
+  .dot-pulse span:nth-child(2){animation-delay:0.2s}
+  .dot-pulse span:nth-child(3){animation-delay:0.4s}
+  @keyframes dp{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-6px);opacity:1}}
+
+  .promo-actions {
+    display:flex; gap:8px; margin-top:10px;
+  }
+
+  .p-copy-btn {
+    flex:1; padding:10px;
+    background:var(--green); border:none;
+    border-radius:10px; color:#000;
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem; font-weight:700;
+    cursor:pointer; transition:background 0.2s;
+  }
+  .p-copy-btn:hover { background:#1db954; }
+
+  .p-wa-btn {
+    padding:10px 16px;
+    background:transparent;
+    border:1px solid var(--green-dark);
+    border-radius:10px; color:var(--green);
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem; cursor:pointer;
+    transition:all 0.2s; text-decoration:none;
+    display:flex; align-items:center; gap:5px;
+    white-space:nowrap;
+  }
+  .p-wa-btn:hover { background:var(--green-dark); color:#fff; }
+
+  .p-regen-btn {
+    padding:10px 14px;
+    background:transparent;
+    border:1px solid var(--border);
+    border-radius:10px; color:var(--muted);
+    font-family:'DM Mono', monospace;
+    font-size:0.68rem; cursor:pointer;
+    transition:all 0.2s; white-space:nowrap;
+  }
+  .p-regen-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+  /* LIMIT BADGE */
+  .limit-badge {
+    font-family:'DM Mono', monospace;
+    font-size:0.6rem; color:var(--muted);
+    text-align:right; margin-bottom:10px;
+  }
+
+  .limit-badge strong { color:var(--green); }
+
+  /* EMPTY STATE */
+  .empty-products {
+    text-align:center; padding:40px 20px;
+    color:var(--muted);
+  }
+  .empty-products .eicon { font-size:2.8rem; margin-bottom:12px; }
+  .empty-products p { font-family:'DM Mono', monospace; font-size:0.68rem; line-height:1.8; }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:24px; left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--green); color:#000;
+    padding:11px 22px; border-radius:24px;
+    font-family:'DM Mono', monospace;
+    font-size:0.72rem; font-weight:700;
+    z-index:999; white-space:nowrap;
+    transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  /* UPGRADE WALL */
+  .onboard-banner {
+    background:linear-gradient(135deg,#0a1f0a,#1a2a00);
+    border:1px solid var(--green-dark);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:4px;
+  }
+  .onboard-banner h3 { font-size:0.9rem; font-weight:700; margin-bottom:12px; color:var(--green); }
+  .onboard-steps { display:flex; flex-direction:column; gap:10px; }
+  .onboard-step { display:flex; align-items:center; gap:12px; }
+  .step-num { width:28px; height:28px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:700; color:#000; flex-shrink:0; }
+  .step-txt { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--text); line-height:1.5; }
+  .step-txt strong { color:var(--green); }
+  .loop-note { margin-top:14px; padding:10px 14px; background:rgba(37,211,102,0.07); border-radius:10px; border:1px solid rgba(37,211,102,0.15); font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--muted); line-height:1.7; }
+  /* PRODUCT EDIT MODAL */
+  .pedit-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:500; align-items:flex-end; justify-content:center; }
+  .pedit-overlay.open { display:flex; }
+  .pedit-modal { background:var(--surface); border:1px solid var(--border); border-radius:20px 20px 0 0; padding:24px 20px 36px; width:100%; max-width:480px; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  .pedit-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .pedit-head h3 { font-size:1rem; font-weight:700; }
+  .pedit-close { width:32px; height:32px; background:var(--surface2); border:1px solid var(--border); border-radius:50%; cursor:pointer; color:var(--muted); font-size:1.2rem; display:flex; align-items:center; justify-content:center; }
+  .pedit-save { width:100%; padding:13px; background:var(--green); border:none; border-radius:12px; color:#000; font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; margin-top:4px; transition:background 0.2s; }
+  .pedit-save:hover { background:#1db954; }
+  .edit-cat-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+
+  .upgrade-wall {
+    background:linear-gradient(135deg,#1a1000,#0d1a00);
+    border:1px solid rgba(244,196,48,0.2);
+    border-radius:16px; padding:24px 20px;
+    text-align:center; margin-top:4px;
+  }
+  .upgrade-wall h3 { font-size:1rem; font-weight:700; margin-bottom:8px; }
+  .upgrade-wall p { font-family:'DM Mono', monospace; font-size:0.65rem; color:var(--muted); line-height:1.7; margin-bottom:16px; }
+  .upgrade-btn {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 24px; background:var(--gold);
+    color:#000; border-radius:12px;
+    font-family:'Syne', sans-serif;
+    font-weight:800; font-size:0.85rem;
+    text-decoration:none; cursor:pointer;
+    border:none; transition:all 0.2s;
+  }
+  .upgrade-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(244,196,48,0.3); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-brand">
+    <div class="login-logo">Pata<span>Hapa</span></div>
+    <div class="login-eyebrow">Business Portal · Subscriber Access</div>
+  </div>
+
+  <div class="login-card">
+    <div class="login-title">Welcome Back</div>
+    <div class="login-sub">Sign in to manage your listings & promos</div>
+
+    <div class="field">
+      <label>Business Code</label>
+      <input type="text" id="loginCode" placeholder="e.g. VISION01" autocomplete="off" onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input type="password" id="loginPass" placeholder="Your password" onkeydown="if(event.key==='Enter') doLogin()">
+        <button class="pw-toggle" onclick="togglePw()" type="button">👁</button>
+      </div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">Enter Portal →</button>
+    <div class="login-error" id="loginErr">❌ Incorrect code or password. Contact Albuk Global to verify your access.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PORTAL SCREEN
+══════════════════════════════════ -->
+<div id="portalScreen" style="display:none">
+
+  <div class="topbar">
+    
